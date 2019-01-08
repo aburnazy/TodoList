@@ -7,7 +7,7 @@ using TodoList.Core.Model.Contracts;
 
 namespace TodoList.Data.InMemory
 {
-    public class InMemoryDataRepository: ITodoRepository
+    public class InMemoryDataRepository: ITodoProvider, ITodoProcessor
     {
         private static int lastId = 0;
 

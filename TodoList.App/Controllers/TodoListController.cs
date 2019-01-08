@@ -13,46 +13,48 @@ namespace TodoList.App.Controllers
     [ApiController]
     public class TodoListController : ControllerBase
     {
-        private readonly ITodoRepository _todoRepository;
+        private readonly ITodoProcessor _todoProcessor;
+        private readonly ITodoProvider _todoProvider;
 
-        public TodoListController(ITodoRepository todoRepository)
+        public TodoListController(ITodoProvider todoProvider, ITodoProcessor todoProcessor)
         {
-            this._todoRepository = todoRepository;
+            this._todoProvider = todoProvider;
+            this._todoProcessor = todoProcessor;
         }
 
         // GET: api/TodoList
         [HttpGet]
         public IEnumerable<Todo> Get()
         {
-            return _todoRepository.FindAll();
+            return _todoProvider.FindAll();
         }
 
         // GET: api/TodoList/5
         [HttpGet("{id}", Name = "Get")]
         public Todo Get(int id)
         {
-            return _todoRepository.FindById(id);
+            return _todoProvider.FindById(id);
         }
 
         // POST: api/TodoList
         [HttpPost]
         public void Post([FromBody] Todo value)
         {
-            _todoRepository.Create(value);
+            _todoProcessor.Create(value);
         }
 
         // PUT: api/TodoList/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] Todo value)
         {
-            _todoRepository.Update(id, value);
+            _todoProcessor.Update(id, value);
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            _todoRepository.Delete(id);
+            _todoProcessor.Delete(id);
         }
     }
 }

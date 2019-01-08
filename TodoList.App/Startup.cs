@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +13,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using TodoList.Core.Model.Contracts;
+using TodoList.Data.DB.Processor;
+using TodoList.Data.DB.Provider;
 using TodoList.Data.InMemory;
 
 namespace TodoList.App
@@ -37,7 +40,14 @@ namespace TodoList.App
             });
 
 
-            services.AddTransient<ITodoRepository, InMemoryDataRepository>();
+            var config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json").Build();
+
+            services
+                .AddTransient<ITodoProvider>(p =>
+                    new TodoProvider(connectionString: config["ConnectionString:TodoList"]))
+                .AddTransient<ITodoProcessor>(p =>
+                    new TodoProcessor(connectionString: config["ConnectionString:TodoList"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
